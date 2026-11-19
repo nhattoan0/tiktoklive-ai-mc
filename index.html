@@ -3,18 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>TikTok LIVE AI MC – Tu Tiên &amp; Mini Game</title>
+  <title>Đấu Trường Tu Tiên – Kiếm Tu vs Yêu Thú</title>
   <style>
     :root {
-      --bg-dark: #090d12;
-      --bg-card: rgba(16, 24, 34, 0.92);
-      --border-gold: rgba(235, 192, 108, 0.35);
-      --jade: #2dd4bf;
-      --jade-dark: #0f766e;
+      --bg: #070b10;
+      --panel: #101824;
       --gold: #f3c669;
-      --crimson: #f87171;
-      --text: #eef2f6;
-      --muted: #9aa7b8;
+      --jade: #2dd4bf;
+      --red: #f87171;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
     }
 
     * {
@@ -24,905 +22,665 @@
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at top, #12242c 0%, var(--bg-dark) 65%);
+      background: radial-gradient(circle at top, #132633 0%, var(--bg) 70%);
       color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
-      padding-bottom: 52px;
+      padding: 12px;
     }
 
-    .top-bar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      background: rgba(9, 13, 18, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border-gold);
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .seal {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      font-size: 18px;
-      color: var(--gold);
-      border: 1px solid var(--gold);
-      background: rgba(243, 198, 105, 0.12);
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 0.98rem;
-      color: var(--gold);
-    }
-
-    .brand p {
-      margin: 2px 0 0;
-      font-size: 0.76rem;
-      color: var(--muted);
-    }
-
-    .header-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .container {
-      max-width: 1240px;
-      margin: 14px auto 0;
-      padding: 0 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-gold);
-      border-radius: 14px;
-      padding: 14px;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
-    }
-
-    .card h2 {
-      margin: 0 0 10px;
-      font-size: 0.96rem;
-      color: var(--jade);
-    }
-
-    .card-header {
+    .top {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
     }
 
-    .card-header h2 {
+    .top h1 {
       margin: 0;
+      font-size: 1.05rem;
+      color: var(--gold);
     }
 
     .badge {
+      background: rgba(45, 212, 191, 0.16);
+      border: 1px solid rgba(45, 212, 191, 0.4);
+      color: var(--jade);
       padding: 4px 10px;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      background: rgba(45, 212, 191, 0.18);
-      color: var(--jade);
     }
 
-    .status-text {
-      margin: 0 0 10px;
-      font-size: 0.84rem;
-      color: var(--muted);
-      line-height: 1.4;
+    .arena-card {
+      background: var(--panel);
+      border: 1px solid rgba(243, 198, 105, 0.35);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
     }
 
-    .demo-row {
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: 300px;
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 12px;
+      background: rgba(7, 11, 16, 0.92);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .bar-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      margin-bottom: 5px;
+    }
+
+    .bar-bg {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+
+    .bar-hero {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #0d9488, #2dd4bf);
+      transition: width 0.2s ease;
+    }
+
+    .bar-enemy {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #dc2626, #f87171);
+      transition: width 0.2s ease;
+    }
+
+    .controls {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+      padding: 12px;
+      background: rgba(16, 24, 36, 0.98);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    select {
-      background: rgba(7, 11, 16, 0.88);
-      color: var(--text);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 10px;
-      padding: 9px 11px;
-      font-size: 0.88rem;
-      width: 100%;
-    }
-
-    .btn {
+    button {
       border: 1px solid transparent;
       border-radius: 10px;
-      padding: 8px 12px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text);
+      padding: 9px 14px;
+      font-size: 0.84rem;
+      font-weight: 700;
       cursor: pointer;
     }
 
-    .btn:active {
+    button:active {
       transform: scale(0.97);
     }
 
-    .btn-gold {
-      background: linear-gradient(135deg, #eab308, #d97706);
-      color: #111;
+    .btn-slash {
+      background: linear-gradient(135deg, #14b8a6, #0f766e);
+      color: #ecfdf5;
+      border-color: #5eead4;
     }
 
-    .btn-jade {
-      background: var(--jade-dark);
-      border-color: var(--jade);
-      color: #e6fffb;
+    .btn-sword {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #111827;
     }
 
-    .btn-outline {
-      background: transparent;
-      border-color: rgba(255, 255, 255, 0.25);
+    .btn-ult {
+      background: linear-gradient(135deg, #a855f7, #6d28d9);
+      color: #f5f3ff;
+      border-color: #d8b4fe;
     }
 
-    .btn-danger {
-      background: rgba(248, 113, 113, 0.16);
-      border-color: rgba(248, 113, 113, 0.45);
-      color: #fecaca;
-    }
-
-    .btn-small {
-      padding: 6px 10px;
-      font-size: 0.78rem;
+    .btn-heal {
       background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.15);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.22);
     }
 
-    .game-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .game-stats {
+    .log {
+      padding: 10px 14px;
+      font-size: 0.84rem;
+      color: var(--gold);
+      background: rgba(0, 0, 0, 0.28);
+      min-height: 40px;
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      font-size: 0.82rem;
-      color: var(--gold);
-      margin-bottom: 10px;
-    }
-
-    .question-text {
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin: 0 0 10px;
-      line-height: 1.4;
-    }
-
-    .options-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .tribulation-banner {
-      text-align: center;
-      padding: 12px;
-      border-radius: 10px;
-      background: rgba(243, 198, 105, 0.08);
-      border: 1px dashed rgba(243, 198, 105, 0.45);
-      margin-bottom: 10px;
-    }
-
-    .realm-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--gold);
-    }
-
-    .tribulation-log {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
     }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .field label {
-      font-size: 0.78rem;
+    .log span:last-child {
       color: var(--muted);
-    }
-
-    .switches {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .switch-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.82rem;
-      background: rgba(255, 255, 255, 0.04);
-      padding: 7px 9px;
-      border-radius: 8px;
-    }
-
-    .queue-info {
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      justify-content: space-between;
       font-size: 0.78rem;
-      color: var(--gold);
-    }
-
-    .event-list,
-    .history-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      max-height: 220px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .event-item,
-    .history-item {
-      padding: 8px 10px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.04);
-      border-left: 3px solid var(--jade);
-      font-size: 0.83rem;
-      line-height: 1.38;
-    }
-
-    .event-item.big-gift {
-      border-left-color: var(--gold);
-      background: rgba(243, 198, 105, 0.14);
-    }
-
-    .event-meta {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    @media (max-width: 900px) {
-      .grid-2,
-      .grid-3 {
-        grid-template-columns: 1fr;
-      }
+      white-space: nowrap;
     }
 
     @media (max-width: 600px) {
-      .options-grid,
-      .form-grid,
-      .switches {
+      #gameCanvas {
+        height: 240px;
+      }
+      .hud {
         grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <header class="top-bar">
-    <div class="brand">
-      <span class="seal">✦</span>
-      <div>
-        <h1>TIKTOK LIVE AI MC + GAME</h1>
-        <p>Trợ Lý Giọng Nói Tiếng Việt &amp; Mini Game Tu Tiên</p>
-      </div>
+  <div class="wrap">
+    <div class="top">
+      <h1>⚔️ ĐẤU TRƯỜNG TU TIÊN: KIẾM TU vs YÊU THÚ</h1>
+      <span id="stageBadge" class="badge">Ải 1 · Thắng: 0</span>
     </div>
 
-    <div class="header-actions">
-      <button id="btnToggleMC" class="btn btn-gold">MC AI: BẬT</button>
-      <button id="btnPauseTTS" class="btn btn-jade">Tạm dừng</button>
-      <button id="btnTestVoice" class="btn btn-outline">Test giọng</button>
-      <button id="btnClearHistory" class="btn btn-danger">Xóa lịch sử</button>
+    <div class="arena-card">
+      <canvas id="gameCanvas" width="960" height="300"></canvas>
+
+      <div class="hud">
+        <div>
+          <div class="bar-head">
+            <span><strong>Thanh Vân Kiếm Tu</strong></span>
+            <span id="heroHpText">120 / 120 HP</span>
+          </div>
+          <div class="bar-bg"><div id="heroHpBar" class="bar-hero"></div></div>
+        </div>
+        <div>
+          <div class="bar-head">
+            <span><strong id="enemyNameText">Hắc Diệm Ma Lang</strong></span>
+            <span id="enemyHpText">120 / 120 HP</span>
+          </div>
+          <div class="bar-bg"><div id="enemyHpBar" class="bar-enemy"></div></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="btnSlash" class="btn-slash">⚔️ Thanh Phong Trảm</button>
+        <button id="btnSwordWave" class="btn-sword">🗡️ Vạn Kiếm Quy Tông</button>
+        <button id="btnUlt" class="btn-ult">⚡ Cửu Thiên Lôi Kiếp</button>
+        <button id="btnHeal" class="btn-heal">🧪 Phục Linh Đan (+35 HP)</button>
+      </div>
+
+      <div class="log">
+        <span id="battleLog">Kiếm tu đã vào trận! Chọn chiêu thức để giao chiến.</span>
+        <span id="comboText">Liên kích: 0</span>
+      </div>
     </div>
-  </header>
-
-  <main class="container">
-    <!-- Khu vực Mini Game Tu Tiên -->
-    <section class="card">
-      <div class="card-header">
-        <h2>Mini Game Tương Tác: Vấn Đáp Tiên Đạo &amp; Độ Kiếp</h2>
-        <span id="playerRealmBadge" class="badge">Cảnh giới: Phàm Nhân</span>
-      </div>
-      <p id="gameFeedback" class="status-text">
-        Chơi trực tiếp trên điện thoại hoặc mô phỏng người xem tham gia game để MC AI đọc bình luận và cộng điểm công đức.
-      </p>
-
-      <div class="grid-2">
-        <!-- Game 1: Vấn Đáp Tiên Đạo -->
-        <div class="game-box">
-          <div class="game-stats">
-            <span>Điểm Tu Vi: <strong id="tuViScore">0</strong></span>
-            <span>Câu hỏi: <strong id="qIndexLabel">1/5</strong></span>
-          </div>
-          <p id="questionText" class="question-text">Đang tải câu hỏi...</p>
-          <div id="optionsContainer" class="options-grid"></div>
-          <button id="btnNextQuestion" class="btn btn-small btn-jade">Câu hỏi tiếp theo</button>
-        </div>
-
-        <!-- Game 2: Thử Thách Độ Kiếp -->
-        <div class="game-box">
-          <div class="game-stats">
-            <span>Lôi Kiếp đã qua: <strong id="tribulationCount">0</strong></span>
-            <span>Linh Thạch: <strong id="spiritStoneCount">50</strong></span>
-          </div>
-          <div class="tribulation-banner">
-            <div id="currentRealmText" class="realm-title">Phàm Nhân</div>
-            <div id="tribulationStatus" class="tribulation-log">Sẵn sàng dẫn linh khí vượt kiếp!</div>
-          </div>
-          <div class="demo-row">
-            <button id="btnDoTribulation" class="btn btn-gold">⚡ Độ Kiếp Ngay</button>
-            <button id="btnResetGame" class="btn btn-outline">Chơi lại từ đầu</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Chế độ DEMO sự kiện LIVE -->
-    <section class="card">
-      <h2>Mô Phỏng Sự Kiện Livestream (DEMO)</h2>
-      <div class="demo-row">
-        <button id="btnDemoToggle" class="btn btn-jade">Bật Auto DEMO</button>
-        <button id="btnSimJoin" class="btn btn-small">+1 Đạo hữu vào</button>
-        <button id="btnSimGift" class="btn btn-small">+1 Quà nhỏ</button>
-        <button id="btnSimBigGift" class="btn btn-small btn-gold">+1 Đại lễ</button>
-        <button id="btnSimChat" class="btn btn-small">+1 Bình luận</button>
-      </div>
-    </section>
-
-    <!-- Cài đặt MC & Giọng nói -->
-    <section class="grid-2">
-      <div class="card">
-        <h2>Bảng Điều Khiển MC</h2>
-        <div class="switches">
-          <label class="switch-item">
-            <input type="checkbox" id="optWelcome" checked />
-            <span>Chào người vào</span>
-          </label>
-          <label class="switch-item">
-            <input type="checkbox" id="optGift" checked />
-            <span>Cảm ơn tặng quà</span>
-          </label>
-          <label class="switch-item">
-            <input type="checkbox" id="optGameAnnounce" checked />
-            <span>MC đọc kết quả game</span>
-          </label>
-          <label class="switch-item">
-            <input type="checkbox" id="optPriorityBigGift" checked />
-            <span>Ưu tiên quà lớn</span>
-          </label>
-        </div>
-
-        <div class="form-grid">
-          <div class="field">
-            <label for="delayBetweenSpeech">Nghỉ giữa câu: <strong id="delayVal">1.5s</strong></label>
-            <input type="range" id="delayBetweenSpeech" min="0.5" max="5" step="0.5" value="1.5" />
-          </div>
-          <div class="field">
-            <label for="bigGiftThreshold">Ngưỡng đại lễ (điểm):</label>
-            <input type="number" id="bigGiftThreshold" min="1" value="100" />
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Giọng Nói AI Tiếng Việt</h2>
-        <div class="form-grid">
-          <div class="field">
-            <label for="voiceGender">Chọn giọng đọc:</label>
-            <select id="voiceGender">
-              <option value="female-north">Giọng Nữ miền Bắc nhẹ nhàng</option>
-              <option value="male-warm">Giọng Nam trầm ấm, tự nhiên</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="voiceRate">Tốc độ: <strong id="rateVal">0.95x</strong></label>
-            <input type="range" id="voiceRate" min="0.7" max="1.35" step="0.05" value="0.95" />
-          </div>
-          <div class="field">
-            <label for="voicePitch">Cao độ: <strong id="pitchVal">1.00</strong></label>
-            <input type="range" id="voicePitch" min="0.7" max="1.3" step="0.05" value="1.0" />
-          </div>
-          <div class="field">
-            <label for="voiceVolume">Âm lượng: <strong id="volumeVal">100%</strong></label>
-            <input type="range" id="voiceVolume" min="0" max="1" step="0.05" value="1" />
-          </div>
-        </div>
-        <div class="queue-info">
-          <span>Hàng đợi: <strong id="queueCount">0</strong> câu</span>
-          <span id="speakingNow">Trạng thái: Nhàn rỗi</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Danh sách & Bảng xếp hạng -->
-    <section class="grid-3">
-      <div class="card">
-        <h2>Đạo Hữu Mới Vào &amp; Chat</h2>
-        <ul id="joinList" class="event-list"></ul>
-      </div>
-      <div class="card">
-        <h2>Linh Bảo / Quà Tặng</h2>
-        <ul id="giftList" class="event-list"></ul>
-      </div>
-      <div class="card">
-        <h2>Bảng Xếp Hạng Công Đức</h2>
-        <ul id="leaderboardList" class="event-list"></ul>
-      </div>
-    </section>
-
-    <!-- Lịch sử bình luận -->
-    <section class="card">
-      <h2>Lịch Sử Bình Luận Của MC AI</h2>
-      <ul id="historyList" class="history-list"></ul>
-    </section>
-  </main>
+  </div>
 
   <script>
-    class XianxiaEngine {
-      constructor() {
-        this.recent = [];
-        this.welcome = [
-          "Xin chào đạo hữu {user}, hoan nghênh đạo hữu đến với buổi tu luyện hôm nay!",
-          "Đạo hữu {user} vừa bước vào tiên môn, xin mời an tọa!",
-          "Linh khí dâng trào, chào mừng đạo hữu {user} ghé thăm đạo tràng!"
-        ];
-        this.gift = [
-          "Đa tạ đạo hữu {user} đã tặng {gift}! Chúc đạo hữu tu vi tăng tiến!",
-          "Đa tạ đạo hữu {user} đã góp linh lực với {gift} cho tông môn!",
-          "Cảm kích đạo hữu {user} cùng {gift}, chúc đạo hữu cảnh giới đột phá!"
-        ];
-        this.bigGift = [
-          "Trời ơi! Xin chúc mừng đạo hữu {user} đã gửi tặng đại lễ {gift}! Đa tạ đạo hữu đã đại trợ tông môn!",
-          "Chấn động thiên địa! Đạo hữu {user} ban đại lễ {gift}, tu vi toàn trường tăng mạnh!"
-        ];
-        this.chat = [
-          "Đạo hữu {user} chia sẻ rất hay, tâm cảnh tại hạ lại thêm phần khai mở!",
-          "Lời của đạo hữu {user} thật thâm sâu, mời đạo hữu tiếp tục đàm đạo!"
-        ];
-      }
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-      pick(list) {
-        const avail = list.filter((x) => !this.recent.includes(x));
-        const pool = avail.length ? avail : list;
-        const chosen = pool[Math.floor(Math.random() * pool.length)];
-        this.recent.push(chosen);
-        if (this.recent.length > 8) this.recent.shift();
-        return chosen;
-      }
-
-      make({ type, user, gift, count = 1, isBigGift = false }) {
-        const gText = count > 1 ? `${count} ${gift}` : gift;
-        if (type === "join") return this.pick(this.welcome).replace(/\{user\}/g, user);
-        if (type === "gift") {
-          const tpl = isBigGift ? this.pick(this.bigGift) : this.pick(this.gift);
-          return tpl.replace(/\{user\}/g, user).replace(/\{gift\}/g, gText || "Linh Bảo");
-        }
-        return this.pick(this.chat).replace(/\{user\}/g, user);
-      }
-    }
-
-    class VietnameseTTSQueue {
-      constructor(onState) {
-        this.queue = [];
-        this.pendingJoins = [];
-        this.joinTimer = null;
-        this.isSpeaking = false;
-        this.isPaused = false;
-        this.enabled = true;
-        this.onState = onState;
-        this.settings = { gender: "female-north", rate: 0.95, pitch: 1.0, volume: 1.0, delaySeconds: 1.5 };
-      }
-
-      updateSettings(p) {
-        this.settings = { ...this.settings, ...p };
-      }
-
-      setEnabled(v) {
-        this.enabled = Boolean(v);
-        if (!this.enabled) this.clearQueue();
-        this.emit();
-      }
-
-      togglePause() {
-        this.isPaused = !this.isPaused;
-        if (this.isPaused && window.speechSynthesis) window.speechSynthesis.cancel();
-        else if (!this.isPaused) this.next();
-        this.emit();
-        return this.isPaused;
-      }
-
-      clearQueue() {
-        this.queue = [];
-        this.pendingJoins = [];
-        if (this.joinTimer) {
-          clearTimeout(this.joinTimer);
-          this.joinTimer = null;
-        }
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
-        this.isSpeaking = false;
-        this.emit();
-      }
-
-      enqueueJoin(user, speech) {
-        if (!this.enabled) return;
-        this.pendingJoins.push({ user, speech });
-        if (!this.joinTimer) {
-          this.joinTimer = setTimeout(() => {
-            const batch = [...this.pendingJoins];
-            this.pendingJoins = [];
-            this.joinTimer = null;
-            if (batch.length === 1) this.enqueue(batch[0].speech, false);
-            else if (batch.length > 1) {
-              const names = batch.slice(0, 3).map((b) => b.user).join(", ");
-              this.enqueue(`Hoan nghênh các đạo hữu ${names} và chư vị đồng môn đã vào phòng!`, false);
-            }
-          }, 1600);
-        }
-      }
-
-      enqueue(text, highPriority = false) {
-        if (!this.enabled || !text) return;
-        if (highPriority) this.queue.unshift({ text });
-        else this.queue.push({ text });
-        this.emit();
-        this.next();
-      }
-
-      emit() {
-        this.onState({
-          queueLength: this.queue.length + this.pendingJoins.length,
-          isSpeaking: this.isSpeaking,
-          isPaused: this.isPaused,
-          enabled: this.enabled
-        });
-      }
-
-      pickVoice() {
-        if (!window.speechSynthesis) return null;
-        const voices = window.speechSynthesis.getVoices() || [];
-        const vi = voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith("vi"));
-        if (!vi.length) return null;
-        const wantMale = this.settings.gender === "male-warm";
-        return (
-          vi.find((v) => {
-            const n = v.name.toLowerCase();
-            return wantMale ? n.includes("nam") || n.includes("male") : n.includes("nữ") || n.includes("nu") || n.includes("female");
-          }) || vi[0]
-        );
-      }
-
-      speak(text) {
-        return new Promise((resolve) => {
-          if (!window.speechSynthesis) return setTimeout(resolve, 1100);
-          window.speechSynthesis.cancel();
-          const u = new SpeechSynthesisUtterance(text);
-          u.lang = "vi-VN";
-          const v = this.pickVoice();
-          if (v) u.voice = v;
-          u.rate = this.settings.rate;
-          u.pitch = v
-            ? this.settings.pitch
-            : this.settings.gender === "male-warm"
-              ? Math.max(0.7, this.settings.pitch - 0.15)
-              : Math.min(1.28, this.settings.pitch + 0.08);
-          u.volume = this.settings.volume;
-          u.onend = resolve;
-          u.onerror = resolve;
-          window.speechSynthesis.speak(u);
-        });
-      }
-
-      async next() {
-        if (this.isSpeaking || this.isPaused || !this.enabled || !this.queue.length) {
-          this.emit();
-          return;
-        }
-        const item = this.queue.shift();
-        this.isSpeaking = true;
-        this.emit();
-        await this.speak(item.text);
-        await new Promise((r) => setTimeout(r, Math.max(300, this.settings.delaySeconds * 1000)));
-        this.isSpeaking = false;
-        this.emit();
-        this.next();
-      }
-    }
-
-    const el = (id) => document.getElementById(id);
-    const engine = new XianxiaEngine();
-    const leaderboard = new Map();
-    let demoTimer = null;
-    let demoIdx = 0;
-
-    const tts = new VietnameseTTSQueue((st) => {
-      el("queueCount").textContent = st.queueLength;
-      if (!st.enabled) el("speakingNow").textContent = "Trạng thái: Đã tắt MC AI";
-      else if (st.isPaused) el("speakingNow").textContent = "Trạng thái: Tạm dừng";
-      else if (st.isSpeaking) el("speakingNow").textContent = "Trạng thái: Đang đọc...";
-      else el("speakingNow").textContent = "Trạng thái: Nhàn rỗi";
-    });
-
-    document.addEventListener("touchstart", () => {
-      if (window.speechSynthesis) {
-        const u = new SpeechSynthesisUtterance("");
-        u.volume = 0;
-        window.speechSynthesis.speak(u);
-      }
-    }, { once: true });
-
-    function nowStr() {
-      return new Date().toLocaleTimeString("vi-VN", { hour12: false });
-    }
-
-    function addList(id, html, extra = "") {
-      const ul = el(id);
-      const li = document.createElement("li");
-      li.className = `event-item ${extra}`.trim();
-      li.innerHTML = `${html}<div class="event-meta">${nowStr()}</div>`;
-      ul.prepend(li);
-      while (ul.children.length > 35) ul.removeChild(ul.lastChild);
-    }
-
-    function logMC(text, tag = "MC AI") {
-      addList("historyList", `<strong>[${tag}]</strong> ${text}`);
-    }
-
-    function updateRank(name, pts) {
-      leaderboard.set(name, (leaderboard.get(name) || 0) + pts);
-      const sorted = [...leaderboard.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
-      el("leaderboardList").innerHTML = sorted
-        .map(([n, s], i) => `<li class="event-item ${i === 0 ? "big-gift" : ""}">#${i + 1} <strong>${n}</strong> — ${s} công đức</li>`)
-        .join("");
-    }
-
-    function speakGameLine(line, tag = "Mini Game") {
-      el("gameFeedback").textContent = line;
-      logMC(line, tag);
-      if (el("optGameAnnounce").checked) tts.enqueue(line, true);
-    }
-
-    // Mini Game 1: Vấn Đáp Tiên Đạo
-    const triviaQuestions = [
-      { q: "Cảnh giới nào thường đứng sau Trúc Cơ trong tu tiên?", opts: ["Kim Đan", "Luyện Khí", "Độ Kiếp", "Phàm Nhân"], ans: 0 },
-      { q: "Đan dược giúp tăng nhanh linh lực gọi là gì?", opts: ["Tụ Khí Đan", "Huyết Lệ Đan", "Phế Đan", "Độc Hồn Đan"], ans: 0 },
-      { q: "Vượt qua lôi kiếp thành công để bước lên tầng cao gọi là?", opts: ["Độ Kiếp Thành Công", "Tẩu Hỏa Nhập Ma", "Tán Tu", "Phàm Trần"], ans: 0 },
-      { q: "Tông môn đứng đầu chánh đạo thường xưng là gì?", opts: ["Tiên Môn Chính Tông", "Ma Đạo Tà Phái", "Tán Tu Liên Minh", "Vô Danh Cốc"], ans: 0 },
-      { q: "Linh thạch dùng để làm gì trong tu luyện?", opts: ["Hấp thụ linh khí & giao dịch", "Chỉ để trang trí", "Đốt làm củi", "Làm thức ăn"], ans: 0 }
+    const enemies = [
+      { name: "Hắc Diệm Ma Lang", maxHp: 120, fur: "#1e293b", accent: "#ef4444", horn: "#f87171", dmg: 14 },
+      { name: "Xích Viêm Yêu Tướng", maxHp: 160, fur: "#451a1a", accent: "#fb923c", horn: "#fde047", dmg: 18 },
+      { name: "U Minh Cự Thú", maxHp: 210, fur: "#1e1b4b", accent: "#c084fc", horn: "#67e8f9", dmg: 22 }
     ];
 
-    let qPos = 0;
-    let tuViScore = 0;
+    const state = {
+      tick: 0,
+      wins: 0,
+      combo: 0,
+      enemyIndex: 0,
+      heroHp: 120,
+      heroMaxHp: 120,
+      enemyHp: 120,
+      enemyMaxHp: 120,
+      heroX: 230,
+      enemyX: 710,
+      heroDash: 0,
+      enemyDash: 0,
+      heroSwing: 0,
+      enemySwing: 0,
+      heroFlash: 0,
+      enemyFlash: 0,
+      lightning: 0,
+      projectiles: [],
+      slashes: [],
+      sparks: [],
+      popups: []
+    };
 
-    function renderQuestion() {
-      const item = triviaQuestions[qPos % triviaQuestions.length];
-      el("qIndexLabel").textContent = `${(qPos % triviaQuestions.length) + 1}/${triviaQuestions.length}`;
-      el("questionText").textContent = item.q;
-      const box = el("optionsContainer");
-      box.innerHTML = "";
-      item.opts.forEach((optText, idx) => {
-        const btn = document.createElement("button");
-        btn.className = "btn btn-small";
-        btn.textContent = optText;
-        btn.addEventListener("click", () => {
-          if (idx === item.ans) {
-            tuViScore += 20;
-            el("tuViScore").textContent = tuViScore;
-            updateRank("Tiên Hữu Tham Gia Game", 20);
-            speakGameLine(`Chính xác! Đáp án ${optText} giúp tu vi tăng thêm 20 điểm!`, "Vấn Đáp");
-          } else {
-            speakGameLine(`Tiếc quá, ${optText} chưa đúng đạo lý. Thử lại câu tiếp theo nhé!`, "Vấn Đáp");
-          }
-          qPos += 1;
-          renderQuestion();
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function setLog(msg) {
+      $("battleLog").textContent = msg;
+    }
+
+    function updateHUD() {
+      const enemy = enemies[state.enemyIndex % enemies.length];
+      $("enemyNameText").textContent = enemy.name;
+      $("heroHpText").textContent = `${Math.max(0, state.heroHp)} / ${state.heroMaxHp} HP`;
+      $("enemyHpText").textContent = `${Math.max(0, state.enemyHp)} / ${state.enemyMaxHp} HP`;
+      $("heroHpBar").style.width = `${Math.max(0, (state.heroHp / state.heroMaxHp) * 100)}%`;
+      $("enemyHpBar").style.width = `${Math.max(0, (state.enemyHp / state.enemyMaxHp) * 100)}%`;
+      $("stageBadge").textContent = `Ải ${state.enemyIndex + 1} · Thắng: ${state.wins}`;
+      $("comboText").textContent = `Liên kích: ${state.combo}`;
+    }
+
+    function addPopup(text, x, y, color) {
+      state.popups.push({ text, x, y, color, alpha: 1, vy: -1.4 });
+    }
+
+    function addSparks(x, y, color, count = 14) {
+      for (let i = 0; i < count; i++) {
+        const ang = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
+        const spd = 2 + Math.random() * 5;
+        state.sparks.push({
+          x,
+          y,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd - 1.5,
+          color,
+          life: 24 + Math.floor(Math.random() * 12)
         });
-        box.appendChild(btn);
+      }
+    }
+
+    function spawnEnemy() {
+      state.enemyIndex += 1;
+      const next = enemies[state.enemyIndex % enemies.length];
+      state.enemyMaxHp = next.maxHp;
+      state.enemyHp = next.maxHp;
+      addPopup(`${next.name} xuất hiện!`, 690, 95, "#f3c669");
+      updateHUD();
+    }
+
+    function applyDamageToEnemy(dmg, label, color) {
+      state.enemyHp -= dmg;
+      state.enemyFlash = 10;
+      state.enemyDash = 26;
+      state.combo += 1;
+      addPopup(`${label} -${dmg}`, state.enemyX, 110, color);
+      addSparks(state.enemyX - 20, 165, color, 16);
+
+      if (state.enemyHp <= 0) {
+        state.wins += 1;
+        state.heroHp = Math.min(state.heroMaxHp, state.heroHp + 20);
+        setLog(`Hạ gục ${enemies[state.enemyIndex % enemies.length].name}! Hồi 20 HP và tiến sang ải mới.`);
+        spawnEnemy();
+      }
+      updateHUD();
+    }
+
+    function enemyTurn() {
+      if (state.enemyHp <= 0) return;
+      const enemy = enemies[state.enemyIndex % enemies.length];
+      state.enemySwing = 16;
+      state.enemyDash = -42;
+
+      setTimeout(() => {
+        if (state.enemyHp <= 0) return;
+        state.heroFlash = 10;
+        state.heroDash = -22;
+        state.heroHp = Math.max(0, state.heroHp - enemy.dmg);
+        state.slashes.push({ x: state.heroX + 10, y: 165, dir: -1, color: enemy.accent, life: 12 });
+        addPopup(`-${enemy.dmg}`, state.heroX, 115, "#f87171");
+        addSparks(state.heroX + 10, 165, enemy.accent, 12);
+
+        if (state.heroHp <= 0) {
+          state.heroHp = state.heroMaxHp;
+          state.combo = 0;
+          setLog("Kiếm tu trọng thương nhưng linh hồn bất diệt, tụ khí hồi sinh đầy HP!");
+          addPopup("HỒI SINH!", state.heroX, 90, "#2dd4bf");
+        } else {
+          setLog(`${enemy.name} vung vuốt phản đòn gây ${enemy.dmg} sát thương!`);
+        }
+        updateHUD();
+      }, 240);
+    }
+
+    function heroSlash() {
+      state.heroDash = 55;
+      state.heroSwing = 16;
+      state.slashes.push({ x: state.enemyX - 25, y: 165, dir: 1, color: "#2dd4bf", life: 14 });
+      applyDamageToEnemy(24, "⚔️", "#2dd4bf");
+      setLog("Kiếm tu lướt tới tung Thanh Phong Trảm!");
+      if (state.enemyHp > 0) setTimeout(enemyTurn, 420);
+    }
+
+    function heroSwordWave() {
+      state.heroDash = 22;
+      state.heroSwing = 14;
+      state.projectiles.push({
+        x: state.heroX + 45,
+        y: 162,
+        vx: 13,
+        dmg: 36,
+        color: "#f3c669",
+        label: "🗡️"
       });
+      setLog("Kiếm tu phóng ra Kiếm Khí Vạn Quân!");
     }
 
-    el("btnNextQuestion").addEventListener("click", () => {
-      qPos += 1;
-      renderQuestion();
-    });
-
-    // Mini Game 2: Thử Thách Độ Kiếp
-    const realms = ["Phàm Nhân", "Luyện Khí Kỳ", "Trúc Cơ Kỳ", "Kim Đan Kỳ", "Nguyên Anh Kỳ", "Hóa Thần Cảnh", "Phi Thăng Tiên Giới"];
-    let realmIdx = 0;
-    let tribCount = 0;
-    let spiritStones = 50;
-
-    function syncRealmUI(statusMsg) {
-      const rName = realms[realmIdx];
-      el("currentRealmText").textContent = rName;
-      el("playerRealmBadge").textContent = `Cảnh giới: ${rName}`;
-      el("tribulationCount").textContent = tribCount;
-      el("spiritStoneCount").textContent = spiritStones;
-      if (statusMsg) el("tribulationStatus").textContent = statusMsg;
+    function heroLightning() {
+      state.heroDash = 16;
+      state.lightning = 18;
+      applyDamageToEnemy(48, "⚡", "#e879f9");
+      setLog("Cửu Thiên Lôi Kiếp giáng xuống đỉnh đầu yêu thú!");
+      if (state.enemyHp > 0) setTimeout(enemyTurn, 460);
     }
 
-    el("btnDoTribulation").addEventListener("click", () => {
-      tribCount += 1;
-      const roll = Math.random();
-      if (roll >= 0.35) {
-        if (realmIdx < realms.length - 1) realmIdx += 1;
-        spiritStones += 30;
-        updateRank("Độ Kiếp Giả", 35);
-        const msg = `Độ kiếp thành công! Bước vào ${realms[realmIdx]} và nhận 30 linh thạch!`;
-        syncRealmUI(msg);
-        speakGameLine(`Oanh! Lôi kiếp tan biến, chúc mừng đạo hữu đột phá lên ${realms[realmIdx]}!`, "Độ Kiếp");
-      } else {
-        spiritStones = Math.max(0, spiritStones - 10);
-        const msg = "Lôi kiếp hơi mạnh, linh lực chấn động nhẹ, hãy tĩnh dưỡng rồi thử lại!";
-        syncRealmUI(msg);
-        speakGameLine("Sấm sét vang dội, độ kiếp chưa trọn vẹn, xin mời đạo hữu điều tức thêm linh khí!", "Độ Kiếp");
+    function heroHeal() {
+      state.heroHp = Math.min(state.heroMaxHp, state.heroHp + 35);
+      state.combo = 0;
+      addPopup("+35 HP", state.heroX, 105, "#2dd4bf");
+      addSparks(state.heroX, 170, "#2dd4bf", 14);
+      setLog("Kiếm tu nuốt Phục Linh Đan, linh lực dồi dào trở lại!");
+      updateHUD();
+      setTimeout(enemyTurn, 420);
+    }
+
+    function drawBackground() {
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      grad.addColorStop(0, "#0b1524");
+      grad.addColorStop(0.65, "#112233");
+      grad.addColorStop(1, "#090d14");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Vầng trăng / linh khí sau lưng
+      ctx.save();
+      ctx.fillStyle = "rgba(243, 198, 105, 0.08)";
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, 125, 92, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Nền đá đấu trường
+      ctx.fillStyle = "#162436";
+      ctx.fillRect(0, 225, canvas.width, 75);
+      ctx.strokeStyle = "rgba(243, 198, 105, 0.35)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 225);
+      ctx.lineTo(canvas.width, 225);
+      ctx.stroke();
+    }
+
+    function drawSwordImmortal(x, y) {
+      const breathe = Math.sin(state.tick * 0.08) * 3;
+      ctx.save();
+      ctx.translate(x, y + breathe);
+
+      if (state.heroFlash > 0) ctx.filter = "brightness(2)";
+
+      // Bóng dưới chân
+      ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+      ctx.beginPath();
+      ctx.ellipse(0, 56, 36, 9, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tóc dài bay phía sau
+      ctx.strokeStyle = "#0f172a";
+      ctx.lineWidth = 8;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(-6, -34);
+      ctx.quadraticCurveTo(-34, -22, -46, 4 + Math.sin(state.tick * 0.14) * 6);
+      ctx.stroke();
+
+      // Vạt áo bào tiên tu
+      ctx.fillStyle = "#0f766e";
+      ctx.beginPath();
+      ctx.moveTo(-18, 50);
+      ctx.lineTo(-6, -12);
+      ctx.lineTo(14, -12);
+      ctx.lineTo(24, 50);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = "#5eead4";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Đai ngọc vàng kim
+      ctx.fillStyle = "#f3c669";
+      ctx.fillRect(-12, 14, 26, 6);
+
+      // Đầu & vương quan
+      ctx.fillStyle = "#fde68a";
+      ctx.beginPath();
+      ctx.arc(4, -26, 13, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#f3c669";
+      ctx.beginPath();
+      ctx.moveTo(-4, -37);
+      ctx.lineTo(4, -49);
+      ctx.lineTo(12, -37);
+      ctx.closePath();
+      ctx.fill();
+
+      // Tay & trường kiếm
+      ctx.save();
+      ctx.translate(12, 0);
+      const swingAngle = state.heroSwing > 0 ? -1.15 + (16 - state.heroSwing) * 0.14 : -0.35;
+      ctx.rotate(swingAngle);
+
+      ctx.strokeStyle = "#99f6e4";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(-6, 0);
+      ctx.lineTo(46, 0);
+      ctx.stroke();
+
+      ctx.fillStyle = "#f3c669";
+      ctx.fillRect(4, -6, 5, 12);
+      ctx.restore();
+
+      // Phi kiếm bay lơ lửng quanh người
+      const swordOrbitY = -58 + Math.cos(state.tick * 0.09) * 5;
+      ctx.strokeStyle = "#2dd4bf";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-26, swordOrbitY);
+      ctx.lineTo(16, swordOrbitY - 6);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawMonster(x, y) {
+      const enemy = enemies[state.enemyIndex % enemies.length];
+      const breathe = Math.cos(state.tick * 0.08) * 3.5;
+      ctx.save();
+      ctx.translate(x, y + breathe);
+
+      if (state.enemyFlash > 0) ctx.filter = "brightness(2)";
+
+      // Bóng dưới chân
+      ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+      ctx.beginPath();
+      ctx.ellipse(0, 56, 44, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Đuôi yêu thú
+      ctx.strokeStyle = enemy.accent;
+      ctx.lineWidth = 6;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(22, 30);
+      ctx.quadraticCurveTo(54, 14 + Math.sin(state.tick * 0.12) * 8, 62, -6);
+      ctx.stroke();
+
+      // Thân yêu thú
+      ctx.fillStyle = enemy.fur;
+      ctx.beginPath();
+      ctx.moveTo(-28, 52);
+      ctx.lineTo(-16, -18);
+      ctx.lineTo(22, -18);
+      ctx.lineTo(30, 52);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = enemy.accent;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Đầu yêu thú & sừng
+      ctx.fillStyle = enemy.fur;
+      ctx.beginPath();
+      ctx.arc(-6, -28, 16, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = enemy.horn;
+      ctx.beginPath();
+      ctx.moveTo(-14, -40);
+      ctx.lineTo(-26, -58);
+      ctx.lineTo(-4, -43);
+      ctx.closePath();
+      ctx.fill();
+
+      // Mắt phát sáng
+      ctx.fillStyle = "#fde047";
+      ctx.beginPath();
+      ctx.arc(-13, -30, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Vuốt yêu thú
+      ctx.save();
+      ctx.translate(-18, 4);
+      const clawAngle = state.enemySwing > 0 ? 1.0 - (16 - state.enemySwing) * 0.12 : 0.25;
+      ctx.rotate(clawAngle);
+      ctx.strokeStyle = enemy.horn;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(-34, 8);
+      ctx.moveTo(-24, 6);
+      ctx.lineTo(-36, 18);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.restore();
+    }
+
+    function updateAndDrawEffects() {
+      // Kiếm khí bay ngang
+      for (let i = state.projectiles.length - 1; i >= 0; i--) {
+        const p = state.projectiles[i];
+        p.x += p.vx;
+
+        ctx.save();
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 24, -0.8, 0.8);
+        ctx.stroke();
+        ctx.restore();
+
+        if (p.x >= state.enemyX - 25) {
+          applyDamageToEnemy(p.dmg, p.label, p.color);
+          state.projectiles.splice(i, 1);
+          if (state.enemyHp > 0) setTimeout(enemyTurn, 380);
+        }
       }
-    });
 
-    el("btnResetGame").addEventListener("click", () => {
-      realmIdx = 0;
-      tribCount = 0;
-      spiritStones = 50;
-      tuViScore = 0;
-      qPos = 0;
-      el("tuViScore").textContent = "0";
-      renderQuestion();
-      syncRealmUI("Đã đặt lại hành trình tu luyện từ Phàm Nhân.");
-    });
+      // Vệt chém
+      for (let i = state.slashes.length - 1; i >= 0; i--) {
+        const s = state.slashes[i];
+        s.life -= 1;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, s.life / 14);
+        ctx.strokeStyle = s.color;
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        if (s.dir === 1) ctx.arc(s.x, s.y, 42, -1.1, 1.1);
+        else ctx.arc(s.x, s.y, 42, Math.PI - 1.1, Math.PI + 1.1);
+        ctx.stroke();
+        ctx.restore();
+        if (s.life <= 0) state.slashes.splice(i, 1);
+      }
 
-    // Sự kiện DEMO
-    const names = ["Nguyễn Văn A", "Trần Minh Khôi", "Lê Tiểu Vy", "Hàn Lập", "Vô Danh Kiếm Khách"];
+      // Tia lôi kiếp
+      if (state.lightning > 0) {
+        state.lightning -= 1;
+        ctx.save();
+        ctx.strokeStyle = "#f0abfc";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(state.enemyX - 24, 0);
+        ctx.lineTo(state.enemyX + 12, 70);
+        ctx.lineTo(state.enemyX - 14, 125);
+        ctx.lineTo(state.enemyX + 6, 185);
+        ctx.stroke();
+        ctx.restore();
+      }
 
-    function handleDemo(type) {
-      const user = names[demoIdx % names.length];
-      demoIdx += 1;
-      const threshold = Number(el("bigGiftThreshold").value) || 100;
+      // Tia lửa
+      for (let i = state.sparks.length - 1; i >= 0; i--) {
+        const sp = state.sparks[i];
+        sp.x += sp.vx;
+        sp.y += sp.vy;
+        sp.vy += 0.18;
+        sp.life -= 1;
 
-      if (type === "join") {
-        addList("joinList", `<strong>${user}</strong> bước vào phòng`);
-        if (!el("optWelcome").checked) return;
-        const line = engine.make({ type: "join", user });
-        logMC(line, "Chào đạo hữu");
-        tts.enqueueJoin(user, line);
-      } else if (type === "gift") {
-        updateRank(user, 10);
-        addList("giftList", `<strong>${user}</strong> tặng <strong>1x Hoa Hồng</strong> (10 điểm)`);
-        if (!el("optGift").checked) return;
-        const line = engine.make({ type: "gift", user, gift: "Hoa Hồng", count: 1, isBigGift: false });
-        logMC(line, "Tạ Quà");
-        tts.enqueue(line, false);
-      } else if (type === "bigGift") {
-        updateRank(user, 250);
-        addList("giftList", `<strong>${user}</strong> tặng <strong>1x Cửu Thiên Huyền Đan</strong> (250 điểm)`, "big-gift");
-        if (!el("optGift").checked) return;
-        const line = engine.make({ type: "gift", user, gift: "Cửu Thiên Huyền Đan", count: 1, isBigGift: true });
-        logMC(line, "Đại Lễ");
-        tts.enqueue(line, 250 >= threshold && el("optPriorityBigGift").checked);
-      } else if (type === "chat") {
-        addList("joinList", `💬 <strong>${user}</strong>: Cho hỏi cách đột phá cảnh giới?`);
-        const line = engine.make({ type: "chat", user });
-        logMC(line, "Đáp Chat");
-        tts.enqueue(line, false);
+        ctx.fillStyle = sp.color;
+        ctx.fillRect(sp.x, sp.y, 4, 4);
+        if (sp.life <= 0) state.sparks.splice(i, 1);
+      }
+
+      // Chữ sát thương
+      for (let i = state.popups.length - 1; i >= 0; i--) {
+        const pop = state.popups[i];
+        pop.y += pop.vy;
+        pop.alpha -= 0.022;
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, pop.alpha);
+        ctx.fillStyle = pop.color;
+        ctx.font = "bold 20px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(pop.text, pop.x, pop.y);
+        ctx.restore();
+
+        if (pop.alpha <= 0) state.popups.splice(i, 1);
       }
     }
 
-    el("btnSimJoin").addEventListener("click", () => handleDemo("join"));
-    el("btnSimGift").addEventListener("click", () => handleDemo("gift"));
-    el("btnSimBigGift").addEventListener("click", () => handleDemo("bigGift"));
-    el("btnSimChat").addEventListener("click", () => handleDemo("chat"));
+    function loop() {
+      state.tick += 1;
+      state.heroDash *= 0.82;
+      state.enemyDash *= 0.82;
+      if (state.heroSwing > 0) state.heroSwing -= 1;
+      if (state.enemySwing > 0) state.enemySwing -= 1;
+      if (state.heroFlash > 0) state.heroFlash -= 1;
+      if (state.enemyFlash > 0) state.enemyFlash -= 1;
 
-    el("btnDemoToggle").addEventListener("click", (e) => {
-      if (demoTimer) {
-        clearInterval(demoTimer);
-        demoTimer = null;
-        e.target.textContent = "Bật Auto DEMO";
-      } else {
-        e.target.textContent = "Tắt Auto DEMO";
-        demoTimer = setInterval(() => {
-          const r = Math.random();
-          if (r < 0.4) handleDemo("join");
-          else if (r < 0.7) handleDemo("gift");
-          else if (r < 0.88) handleDemo("chat");
-          else handleDemo("bigGift");
-        }, 3600);
-      }
-    });
+      drawBackground();
+      drawSwordImmortal(state.heroX + state.heroDash, 165);
+      drawMonster(state.enemyX + state.enemyDash, 165);
+      updateAndDrawEffects();
 
-    el("btnToggleMC").addEventListener("click", (e) => {
-      const next = !tts.enabled;
-      tts.setEnabled(next);
-      e.target.textContent = next ? "MC AI: BẬT" : "MC AI: TẮT";
-    });
-
-    el("btnPauseTTS").addEventListener("click", (e) => {
-      const p = tts.togglePause();
-      e.target.textContent = p ? "Tiếp tục" : "Tạm dừng";
-    });
-
-    el("btnTestVoice").addEventListener("click", () => {
-      const g = el("voiceGender").value === "male-warm" ? "giọng nam trầm ấm" : "giọng nữ miền Bắc nhẹ nhàng";
-      const line = `Kiểm tra ${g} thành công. Chúc đạo hữu tu vi tăng tiến!`;
-      logMC(line, "Kiểm tra");
-      tts.enqueue(line, true);
-    });
-
-    el("btnClearHistory").addEventListener("click", () => {
-      ["joinList", "giftList", "leaderboardList", "historyList"].forEach((id) => (el(id).innerHTML = ""));
-      leaderboard.clear();
-      tts.clearQueue();
-    });
-
-    function syncVoice() {
-      const rate = Number(el("voiceRate").value);
-      const pitch = Number(el("voicePitch").value);
-      const volume = Number(el("voiceVolume").value);
-      const delaySeconds = Number(el("delayBetweenSpeech").value);
-      el("rateVal").textContent = `${rate.toFixed(2)}x`;
-      el("pitchVal").textContent = pitch.toFixed(2);
-      el("volumeVal").textContent = `${Math.round(volume * 100)}%`;
-      el("delayVal").textContent = `${delaySeconds.toFixed(1)}s`;
-      tts.updateSettings({ gender: el("voiceGender").value, rate, pitch, volume, delaySeconds });
+      requestAnimationFrame(loop);
     }
 
-    ["voiceGender", "voiceRate", "voicePitch", "voiceVolume", "delayBetweenSpeech"].forEach((id) => {
-      el(id).addEventListener("input", syncVoice);
-      el(id).addEventListener("change", syncVoice);
-    });
+    $("btnSlash").addEventListener("click", heroSlash);
+    $("btnSwordWave").addEventListener("click", heroSwordWave);
+    $("btnUlt").addEventListener("click", heroLightning);
+    $("btnHeal").addEventListener("click", heroHeal);
 
-    renderQuestion();
-    syncRealmUI();
-    syncVoice();
+    updateHUD();
+    loop();
   </script>
 </body>
 </html>
